@@ -3,6 +3,7 @@ from ._builtin import Page, WaitPage
 from .models import Constants, WaitingPeriod, GainedAmount
 from random import randint
 import random
+import math
 
 class Questionnaire(Page):
     form_model = 'player'
@@ -15,8 +16,8 @@ class Questionnaire(Page):
 
     def generate_questionnaire_parameters(self):
         """ 步驟二：取得等待週數的list，並打亂順序後回傳"""
-
-
+        shuffled_waiting_period = WasitingPeriod.list
+        random.shuffle(shuffled_waiting_period)
         return shuffled_waiting_period
 
     def setup_questionaire_parameters_pairs(self):
@@ -30,7 +31,7 @@ class Questionnaire(Page):
         # 設定每一 round 的參數，並寫入 db
         idx = self.round_number - 1 # list 從0開始 但 round_bnumber 從1開始
         """ 步驟三：取得該回合的等待週數、存進player的waiting_period中"""
-
+        self.player.waiting_period = math.floor(params[idx]/10)
         sooner_period = int(params[idx] % 10)
         
         if sooner_period == 0:
@@ -41,7 +42,7 @@ class Questionnaire(Page):
     def is_displayed(self): # 一定會跑的
         # 設定每一 round 的參數（如週數和金額）
         """ 步驟一：執行setup_questionaire_parameters_pairs，來分配週數"""
-
+    self.setup_questionaire_parameters_pairs()
         return True
 
 page_sequence = [Questionnaire]
